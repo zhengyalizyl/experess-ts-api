@@ -1,6 +1,6 @@
 import bcryptjs  from 'bcryptjs';
 // import isEmail from 'validator/lib/isEmail';
-import mongoose, { Model, Schema, Document,HookNextFunction } from "mongoose";
+import mongoose, { Model, Schema, Document,CallbackWithoutResultAndOptionalError } from "mongoose";
 import {v4} from 'uuid';
 
 enum Role{
@@ -63,10 +63,11 @@ const UserSchema: Schema<IUserDocument> = new Schema({
     createdAt: Date
 })
 
-UserSchema.pre<IUserDocument>('save',async function  save(next:HookNextFunction){
+UserSchema.pre<IUserDocument>('save',async function  save(next:CallbackWithoutResultAndOptionalError){
       
         try {
             const hashPassword=await bcryptjs.hash(this.password,10);
+            console.log(hashPassword,next)
         } catch (error) {
             
         }

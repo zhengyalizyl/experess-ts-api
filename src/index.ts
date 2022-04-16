@@ -6,6 +6,7 @@ import { postRegister} from "./controllers/user";
 import bodyParser from "body-parser";
 import   cors from 'cors';
 import { errorMiddleware } from "./middlewares/error.middleware";
+import 'dotenv/config'
 
 const app:Express =express();
 
@@ -23,7 +24,7 @@ app.use(bodyParser.json());
 app.use('/user/register',postRegister)
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{
-    const error=new HttpException(StatusCodes.NOT_FOUND,'Router Not found')
+    const error: HttpException=new HttpException(StatusCodes.NOT_FOUND,'Router Not found')
     next(error);
 })
 

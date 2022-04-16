@@ -1,4 +1,4 @@
-class HttpException extends Error{
+class HttpException extends Error{//Error是全局的变量，不用导入
     status:number;
     message:string;
     errors?:any
