@@ -158,7 +158,7 @@ export const likePost = async (req: Request, res: Response, next: NextFunction):
       if (post.likes.find(like => like.username = user.username)) {
         post.likes = post.likes.filter(like => like.username !== user.username);
         // user.like_posts=user.like_posts.filter(post=>post.username!==user.username);
-        user.like_posts=user.like_posts.filter((id:string)=>!user.like_posts.includes(id))
+        user.like_posts=user.like_posts.filter((id:any)=>!user.like_posts.includes(id))
       } else {
         post.likes.push({
           username: user.username,

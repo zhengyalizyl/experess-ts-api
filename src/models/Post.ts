@@ -4,7 +4,7 @@ import  mongoosePageination from 'mongoose-paginate-v2'
 
 interface Like{
     username:IUserDocument["username"],
-    createAt:string
+    createAt:string,
 }
 
 interface IPostModel extends PaginateModel<IPostDocument>{}
@@ -13,7 +13,15 @@ export interface IPostDocument extends Document{
      createAt:String,
      username:IUserDocument["username"],
      user:IUserDocument["_id"],
-     likes:Like[]
+     likes:Like[],
+     comments:Comment[]
+}
+
+interface Comment{
+    username:IUserDocument["username"],
+    body:IPostDocument["body"],
+    createAt:string,
+    id?:IPostDocument["_id"]
 }
 
 
@@ -26,6 +34,11 @@ export const postSchema:Schema=new Schema({
         ref:"User",
         required:true
     },
+    comments:[{
+        username:String,
+        body:String,
+        createAt:String
+    }],
     likes:[//这里的post是多多的关系,即一个post可以被多人喜欢，一个人喜欢多个post
         {
             username:String,

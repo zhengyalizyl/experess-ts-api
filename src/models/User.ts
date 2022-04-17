@@ -36,7 +36,7 @@ interface IUserDocument extends Document {
     uuid:string,
     generateToken:()=>string,
     // like_posts:IPostDocument[]
-    like_posts:IPostDocument["_id"]
+    like_posts:IPostDocument["_id"],
 }
 
 const addressSchema:Schema=new Schema({
