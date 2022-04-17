@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node-dev --respawn src/index.ts",
-    "dev": "nodemon --exec ts-node src/index.ts PORT=8000"
+    "dev": "nodemon --exec ts-node  --files src/index.ts PORT=8000"
   },
   "keywords": [],
   "author": "",
@@ -18,9 +18,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "helmet": "^5.0.2",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.10",
+    "mongoose-paginate-v2": "^1.6.3",
+    "morgan": "^1.10.0",
     "uuid": "^8.3.2",
     "validator": "^13.7.0"
   },
@@ -30,6 +33,7 @@
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/mongoose": "^5.11.97",
+    "@types/morgan": "^1.9.3",
     "@types/node": "^17.0.23",
     "@types/validator": "^13.7.2",
     "nodemon": "^2.0.15",

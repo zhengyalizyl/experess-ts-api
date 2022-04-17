@@ -42,10 +42,11 @@ export const postLogin=async (req:Request,res:Response,next:NextFunction):Promis
       errors.general = "Wrong credentials";
       return throwLoginValidateError(errors);
     }
+    const token =findUser.generateToken();
       res.json({
         successfull:true,
         data:{
-          
+          token
         }
       })
    } catch (error) {

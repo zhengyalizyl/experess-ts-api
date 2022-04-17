@@ -23,27 +23,27 @@ interface registerType{
 
 export const validateRegisterInput=({username,password,email,confirmPassword}:registerType)=>{
      let errors:RegisterInputError={};
-     if (isEmpty(username||'')) {
+     if (isEmpty(username.trim())) {
         errors.username = "Username must not be empty";
       }
     
-      if (isEmpty(password||'')) {
+      if (isEmpty(password.trim())) {
         errors.password = "Password must not be empty";
       }
     
-      if (isEmpty(confirmPassword||'')) {
+      if (isEmpty(confirmPassword.trim())) {
         errors.confirmPassword = "Confirmed password must not be empty";
       }
     
-      if (!equals(password||'', confirmPassword||'')) {
+      if (!equals(password.trim(), confirmPassword.trim())) {
         errors.confirmPassword = "Passwords must match";
       }
     
-      if (isEmpty(email||'')) {
+      if (isEmpty(email.trim())) {
         errors.email = "Email must not be empty";
       }
     
-      if (!isEmail(email||'')) {
+      if (!isEmail(email.trim())) {
         errors.email = "Email must be a valid email address";
       }
     return {errors,valid:Object.keys(errors).length<1}
@@ -58,11 +58,11 @@ interface loginType{
 
 export const validateLoginInput=({username,password}:loginType)=>{
   let errors:LoginInputError={};
-  if (isEmpty(username||'')) {
+  if (isEmpty(username.trim())) {
      errors.username = "Username must not be empty";
    }
  
-   if (isEmpty(password||'')) {
+   if (isEmpty(password.trim())) {
      errors.password = "Password must not be empty";
    }
  

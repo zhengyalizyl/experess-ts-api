@@ -7,7 +7,10 @@ import bodyParser from "body-parser";
 import   cors from 'cors';
 import { errorMiddleware } from "./middlewares/error.middleware";
 import 'dotenv/config'
-import { getPosts } from './controllers/post';
+import { getPosts, createPost, getPost, updatePost, deletePost, likePost } from './controllers/post';
+import { checkAuthMiddleware } from "./middlewares/check-auth.middleware";
+import morgan from "morgan";
+import helmet from "helmet";
 
 const app:Express =express();
 
@@ -18,13 +21,19 @@ app.get('/',(_req:Request,res:Response)=>{
     })
 })
 
-
+app.use(morgan("dev"));
+app.use(helmet());
 app.use(cors())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json());
 app.use('/user/register',postRegister)
 app.use('/user/login',postLogin)
-app.use('/posts',getPosts)
+app.get('/posts',getPosts)
+app.post('/posts',checkAuthMiddleware,createPost)
+app.get('/posts/:id',checkAuthMiddleware,getPost)
+app.put('/posts/:id',checkAuthMiddleware,updatePost)
+app.delete('/posts/:id',checkAuthMiddleware,deletePost)
+app.post('/posts/:id/like',checkAuthMiddleware,likePost)
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{
     const error: HttpException=new HttpException(StatusCodes.NOT_FOUND,'Router Not found')

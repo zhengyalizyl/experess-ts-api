@@ -4,6 +4,8 @@ import mongoose, { Model, Schema, Document,CallbackWithoutResultAndOptionalError
 import {v4} from 'uuid';
 import jwt from "jsonwebtoken";
 import { JwtPayload } from '../types/jwt';
+// import { IPostDocument, postSchema } from './Post';
+import { IPostDocument } from './Post';
 
 enum Role{
     basic='basic',
@@ -23,7 +25,7 @@ interface IUserModel extends Model <IUserDocument>{
         _id: any;
     }, {}, IUserDocument>
 }
-export interface IUserDocument extends Document {
+interface IUserDocument extends Document {
     username: string,
     password: string,
     email: string,
@@ -32,7 +34,9 @@ export interface IUserDocument extends Document {
     role:Role,
     address:Adress[],
     uuid:string,
-    generateToken:()=>string
+    generateToken:()=>string,
+    // like_posts:IPostDocument[]
+    like_posts:IPostDocument["_id"]
 }
 
 const addressSchema:Schema=new Schema({
@@ -72,6 +76,15 @@ const UserSchema: Schema<IUserDocument> = new Schema({
         trim: true,
         match: /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/
     },
+    // like_posts:{
+    //     type:[postSchema]//这里把整个post都存储起来了
+    // }
+    like_posts:[
+        {
+        type:Schema.Types.ObjectId,//这里仅仅存储了Post的id
+        ref:"Post"
+    }
+    ]
     // createdAt: Date
 },{timestamps:true})
 
@@ -110,7 +123,7 @@ UserSchema.pre<IUserDocument>('save',async function  save(next:CallbackWithoutRe
 
 UserSchema.index({username:1})
 
-const User:IUserModel = mongoose.model<IUserDocument,IUserModel>('user', UserSchema);
+const User:IUserModel = mongoose.model<IUserDocument,IUserModel>('User', UserSchema);
 
 export {
     User,
