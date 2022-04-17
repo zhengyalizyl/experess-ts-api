@@ -2,11 +2,12 @@ import express,{Express,NextFunction,Request,Response} from "express";
 import mongoose from "mongoose";
 import  StatusCodes from "http-status-codes";
 import HttpException from "./exception/HttpException";
-import { postRegister} from "./controllers/user";
+import { postLogin, postRegister} from "./controllers/user";
 import bodyParser from "body-parser";
 import   cors from 'cors';
 import { errorMiddleware } from "./middlewares/error.middleware";
 import 'dotenv/config'
+import { getPosts } from './controllers/post';
 
 const app:Express =express();
 
@@ -22,6 +23,8 @@ app.use(cors())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json());
 app.use('/user/register',postRegister)
+app.use('/user/login',postLogin)
+app.use('/posts',getPosts)
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{
     const error: HttpException=new HttpException(StatusCodes.NOT_FOUND,'Router Not found')

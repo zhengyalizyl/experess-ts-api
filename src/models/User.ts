@@ -1,7 +1,9 @@
 import bcryptjs  from 'bcryptjs';
 // import isEmail from 'validator/lib/isEmail';
-import mongoose, { Model, Schema, Document,CallbackWithoutResultAndOptionalError } from "mongoose";
+import mongoose, { Model, Schema, Document,CallbackWithoutResultAndOptionalError,Query} from "mongoose";
 import {v4} from 'uuid';
+import jwt from "jsonwebtoken";
+import { JwtPayload } from '../types/jwt';
 
 enum Role{
     basic='basic',
@@ -12,15 +14,25 @@ interface Adress{
     city:string,
     street:string
 }
-interface IUserDocument extends Document {
+
+interface IUserModel extends Model <IUserDocument>{
+    admin:()=>Query<IUserDocument|null,IUserDocument,{}>
+    orderByUsernameDesc:Query<(IUserDocument & {
+        _id: any;
+    })[], IUserDocument & {
+        _id: any;
+    }, {}, IUserDocument>
+}
+export interface IUserDocument extends Document {
     username: string,
     password: string,
     email: string,
-    createdAt: Date,
+    // createdAt: Date,
     _doc: IUserDocument,
     role:Role,
     address:Adress[],
-    uuid:string
+    uuid:string,
+    generateToken:()=>string
 }
 
 const addressSchema:Schema=new Schema({
@@ -60,22 +72,45 @@ const UserSchema: Schema<IUserDocument> = new Schema({
         trim: true,
         match: /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/
     },
-    createdAt: Date
+    // createdAt: Date
+},{timestamps:true})
+
+UserSchema.methods.generateToken=function ():string{
+    const payload:JwtPayload={id:this.id}
+    return jwt.sign(payload,process.env.JWT_SECRET_KEY!,{expiresIn:'1h'})
+}
+
+UserSchema.static('admin',():Query<IUserDocument|null,IUserDocument,{}>=>{
+    return User.findOne({username:'zyl'});
 })
 
+
+
+UserSchema.static("orderByUsernameDesc", ():Query<(IUserDocument & {
+    _id: any;
+})[], IUserDocument & {
+    _id: any;
+}, {}, IUserDocument>=> {
+    return User.find({}).sort({ username: -1 });
+  });
+  
+
 UserSchema.pre<IUserDocument>('save',async function  save(next:CallbackWithoutResultAndOptionalError){
-      
+       if(!this.isModified('password')){
+           return next()
+       }
         try {
             const hashPassword=await bcryptjs.hash(this.password,10);
-            console.log(hashPassword,next)
+            this.password=hashPassword;
+            next()
         } catch (error) {
-            
+            next(error);
         }
 })
 
 UserSchema.index({username:1})
 
-const User: Model<IUserDocument> = mongoose.model<IUserDocument>('user', UserSchema);
+const User:IUserModel = mongoose.model<IUserDocument,IUserModel>('user', UserSchema);
 
 export {
     User,
