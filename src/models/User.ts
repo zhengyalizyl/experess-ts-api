@@ -1,6 +1,6 @@
 import bcryptjs  from 'bcryptjs';
 // import isEmail from 'validator/lib/isEmail';
-import mongoose, { Model, Schema, Document,CallbackWithoutResultAndOptionalError,Query} from "mongoose";
+import mongoose, { Model, Schema, Document, HookNextFunction, DocumentQuery} from "mongoose";
 import {v4} from 'uuid';
 import jwt from "jsonwebtoken";
 import { JwtPayload } from '../types/jwt';
@@ -18,12 +18,8 @@ interface Adress{
 }
 
 interface IUserModel extends Model <IUserDocument>{
-    admin:()=>Query<IUserDocument|null,IUserDocument,{}>
-    orderByUsernameDesc:Query<(IUserDocument & {
-        _id: any;
-    })[], IUserDocument & {
-        _id: any;
-    }, {}, IUserDocument>
+    admin:()=>DocumentQuery<IUserDocument|null,IUserDocument,{}>
+    orderByUsernameDesc:DocumentQuery<IUserDocument[], IUserDocument, {}>
 }
 interface IUserDocument extends Document {
     username: string,
@@ -93,22 +89,17 @@ UserSchema.methods.generateToken=function ():string{
     return jwt.sign(payload,process.env.JWT_SECRET_KEY!,{expiresIn:'1h'})
 }
 
-UserSchema.static('admin',():Query<IUserDocument|null,IUserDocument,{}>=>{
+UserSchema.static('admin',():DocumentQuery<IUserDocument|null,IUserDocument,{}>=>{
     return User.findOne({username:'zyl'});
 })
 
-
-
-UserSchema.static("orderByUsernameDesc", ():Query<(IUserDocument & {
-    _id: any;
-})[], IUserDocument & {
-    _id: any;
-}, {}, IUserDocument>=> {
+  
+  UserSchema.static("orderByUsernameDesc", ():DocumentQuery<IUserDocument[],IUserDocument,{}>=> {
     return User.find({}).sort({ username: -1 });
   });
-  
 
-UserSchema.pre<IUserDocument>('save',async function  save(next:CallbackWithoutResultAndOptionalError){
+
+UserSchema.pre<IUserDocument>('save',async function save(next:HookNextFunction){
        if(!this.isModified('password')){
            return next()
        }

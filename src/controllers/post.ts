@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import HttpException from "../exception/HttpException";
 import isEmpty from "validator/lib/isEmpty";
-import Post from "../models/Post";
+import  Post  from "../models/Post";
 import { IUserDocument } from "../models/User";
 
 export const getPosts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -147,7 +147,6 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
     next(error)
   }
 }
-
 
 export const likePost = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {

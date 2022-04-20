@@ -1,4 +1,4 @@
-import { model,Schema,Document,PaginateModel } from "mongoose";
+import mongoose, { Schema,Document,PaginateModel,Model } from "mongoose";
 import { IUserDocument } from "./User";
 import  mongoosePageination from 'mongoose-paginate-v2'
 
@@ -7,7 +7,12 @@ interface Like{
     createAt:string,
 }
 
+
+
 interface IPostModel extends PaginateModel<IPostDocument>{}
+
+interface IPostModel extends Model <IPostDocument>{
+}
 export interface IPostDocument extends Document{
      body:string,
      createAt:String,
@@ -49,6 +54,6 @@ export const postSchema:Schema=new Schema({
 
 postSchema.plugin(mongoosePageination)
 
-const Post:IPostModel=model<IPostDocument,IPostModel>("Post",postSchema);
+const Post:IPostModel=mongoose.model<IPostDocument,IPostModel>("Post",postSchema);
 
-export default Post;
+export default Post
