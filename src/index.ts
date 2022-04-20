@@ -8,7 +8,7 @@ import   cors from 'cors';
 import { errorMiddleware } from "./middlewares/error.middleware";
 import 'dotenv/config'
 import { getPosts, createPost, getPost, updatePost, deletePost, likePost } from './controllers/post';
-import { checkAuthMiddleware } from "./middlewares/check-auth.middleware";
+import { checkAdminAuthMiddleware, checkAuthMiddleware } from "./middlewares/check-auth.middleware";
 import morgan from "morgan";
 import helmet from "helmet";
 import { createComment,deleteComment } from './controllers/comments';
@@ -42,8 +42,8 @@ app.delete("/posts/:id/comments/:commentId",checkAuthMiddleware,deleteComment)
 
 app.use('/admin/register',adminRegister)
 app.use('/admin/login',postAdminLogin)
-app.use('/admin/list',adminList)
-app.use('/admin/add',addAdmin)
+app.use('/admin/list',checkAdminAuthMiddleware,adminList)
+app.use('/admin/add',checkAdminAuthMiddleware,addAdmin)
 
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{
