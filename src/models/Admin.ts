@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { Schema, model, Model, Document } from "mongoose";
 import { AdminJwtPayload } from "../types/jwt";
 import {auth} from "../config/config";
-
+import uniqueValidator  from 'mongoose-unique-validator';
 export interface IAdminDocument extends Document {
   username: string;
   password: string;
@@ -12,7 +12,7 @@ export interface IAdminDocument extends Document {
 
 const adminSchema: Schema = new Schema(
   {
-    username: String,
+    username: {type:String,unique:true,trim:true},
     password: String
   },
   { timestamps: true }
@@ -32,6 +32,7 @@ adminSchema.set("toJSON", {
   }
 });
 
+adminSchema.plugin(uniqueValidator)
 const Admin: Model<IAdminDocument> = model<IAdminDocument>(
   "Admin",
   adminSchema

@@ -53,7 +53,6 @@ export const postLogin=async (req:Request,res:Response,next:NextFunction):Promis
      next(error)
    }
 
-
 }
 
 export const postRegister = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
@@ -91,7 +90,7 @@ export const postRegister = async (req: Request, res: Response, next: NextFuncti
     res.json({
       successfull: true,
       data: {
-        user: newUser._doc,
+        // user: newUser._doc,
         token
       }
     })

@@ -12,7 +12,7 @@ import { checkAuthMiddleware } from "./middlewares/check-auth.middleware";
 import morgan from "morgan";
 import helmet from "helmet";
 import { createComment,deleteComment } from './controllers/comments';
-import { adminRegister } from './controllers/admin';
+import { adminRegister, postAdminLogin, adminList, addAdmin } from './controllers/admin';
 
 const app:Express =express();
 
@@ -38,7 +38,12 @@ app.delete('/posts/:id',checkAuthMiddleware,deletePost)
 app.post('/posts/:id/like',checkAuthMiddleware,likePost)
 app.post("/posts/:id/comment",checkAuthMiddleware,createComment)
 app.delete("/posts/:id/comments/:commentId",checkAuthMiddleware,deleteComment)
-app.use('/admin/login',adminRegister)
+
+
+app.use('/admin/register',adminRegister)
+app.use('/admin/login',postAdminLogin)
+app.use('/admin/list',adminList)
+app.use('/admin/add',addAdmin)
 
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{
