@@ -8,12 +8,14 @@ export interface IAdminDocument extends Document {
   password: string;
   generateToken: () => string;
   _doc:IAdminDocument;
+  isAdmin:boolean;
 }
 
 const adminSchema: Schema = new Schema(
   {
     username: {type:String,unique:true,trim:true},
-    password: String
+    password: String,
+    isAdmin:{type:Boolean,default:false}
   },
   { timestamps: true }
 );

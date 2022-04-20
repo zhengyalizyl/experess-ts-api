@@ -44,7 +44,7 @@ export const checkAdminAuthMiddleware=async(req:Request,res:Response,next:NextFu
                 const jwtData = jwt.verify(token, process.env.JWT_SECRET_KEY!) as JwtPayload
                 const admin = await Admin.findById(jwtData.id);
                 if (admin) {
-                 //这里需要存储用户并将用户存储在req中
+                 //这里需要存储管理员并将管理员信息存储在req中
                  req.currentAdmin=admin
                  return next()
                 } else {

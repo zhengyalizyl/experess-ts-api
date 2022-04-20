@@ -30,7 +30,8 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
 
       const admin: IAdminDocument = new Admin({
         username,
-        password:hashPassword
+        password:hashPassword,
+        isAdmin:true
       })
   
       
@@ -133,7 +134,8 @@ export const addAdmin=async (req:Request,res:Response,next:NextFunction):Promise
     const hashedPassword=await bcryptjs.hash(password,10);
     const admin=new Admin({
       username,
-      password:hashedPassword
+      password:hashedPassword,
+      isadmin:false
     })
     const resAdmin=await admin.save()
 
