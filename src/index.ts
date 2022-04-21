@@ -15,6 +15,7 @@ import { createComment,deleteComment } from './controllers/comments';
 import { adminRegister, postAdminLogin, adminList, addAdmin } from './controllers/admin';
 import { permit } from './middlewares/permission.middleware';
 import { addRole, addRoleForAdmin, RoleList, updateRole } from "./controllers/role";
+import { addPermission, permissionList, updatePermission, deletePermission } from './controllers/permissions';
 
 const app:Express =express();
 
@@ -48,8 +49,12 @@ app.get('/admin/list',checkAdminAuthMiddleware,permit("admin","basic"),adminList
 app.use('/admin/add',checkAdminAuthMiddleware,permit("coder","admin","basic"),addAdmin)
 app.get("/admin/roles",checkAdminAuthMiddleware,RoleList)
 app.post('/admin/addRoles',checkAdminAuthMiddleware,addRole)
-app.post("/admin/updateRole/:id",checkAdminAuthMiddleware,updateRole)
-app.post("/admin/:id/role/:roleId",checkAdminAuthMiddleware,addRoleForAdmin)
+app.put("/admin/updateRole/:id",checkAdminAuthMiddleware,updateRole)
+app.put("/admin/:id/role/:roleId",checkAdminAuthMiddleware,addRoleForAdmin)
+app.post("/admin/addPermissions",checkAdminAuthMiddleware,addPermission)
+app.put("/admin/permission/:id",checkAdminAuthMiddleware,updatePermission)
+app.delete("/admin/permission/:id",checkAdminAuthMiddleware,deletePermission)
+app.get("/admin/permissions",checkAdminAuthMiddleware,permissionList)
 
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{
