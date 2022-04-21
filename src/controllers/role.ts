@@ -103,6 +103,33 @@ export const addRoleForAdmin=async (req:Request,res:Response,next:NextFunction):
     }
   
   }
+export const addRolesForAdmin=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
+    try {
+      const { id } =req.params;
+      const {roleIds}=req.body;
+  
+      const admin = await Admin.findById(id);
+     if(!admin){
+        throw new HttpException(
+            StatusCodes.UNPROCESSABLE_ENTITY,
+            "admin not found",
+          );
+     }
+
+     admin.roles=roleIds;
+     await admin.save();
+     const resAdmin=await Admin.findById(id)
+       res.json({
+         successfull:true,
+         data:{
+           admin:resAdmin
+         }
+       })
+    } catch (error) {
+      next(error)
+    }
+  
+  }
 export const addRoleForPersmission=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
     try {
       const { id } =req.params;

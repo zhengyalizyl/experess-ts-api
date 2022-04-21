@@ -18,7 +18,8 @@ export interface IAdminDocument extends Document {
   generateToken: () => string;
   _doc:IAdminDocument;
   // role:Role;
-  role:IRoleDocument["_id"]
+  role:IRoleDocument["_id"];
+  roles:IRoleDocument["_id"][];
   isAdmin:boolean;
 }
 
@@ -33,7 +34,13 @@ const adminSchema: Schema = new Schema(
       ref:"Role",
       exist:true,
       autopopulate:true//自动填充role的相关信息比如nane，nameCn到这里来
-    }
+    },
+    roles:[{
+      type:Schema.Types.ObjectId,
+      ref:"Role",
+      exist:true,
+      autopopulate:true//自动填充role的相关信息比如nane，nameCn到这里来
+    }]
   },
   { timestamps: true }
 );

@@ -14,7 +14,7 @@ import helmet from "helmet";
 import { createComment,deleteComment } from './controllers/comments';
 import { adminRegister, postAdminLogin, adminList, addAdmin } from './controllers/admin';
 // import { permit } from './middlewares/permission.middleware';
-import { addRole, addRoleForAdmin, addRoleForPersmission, RoleList, updateRole } from "./controllers/role";
+import { addRole, addRoleForAdmin, addRoleForPersmission, addRolesForAdmin, RoleList, updateRole } from "./controllers/role";
 import { addPermission, permissionList, updatePermission, deletePermission } from './controllers/permissions';
 import { allowRole } from './middlewares/role.middlewarte';
 
@@ -48,10 +48,11 @@ app.use('/admin/register',adminRegister)
 app.use('/admin/login',postAdminLogin)
 app.get('/admin/list',checkAdminAuthMiddleware,allowRole('read admin'),adminList)
 app.use('/admin/add',checkAdminAuthMiddleware,allowRole('add admin'),addAdmin)
-app.get("/admin/roles",checkAdminAuthMiddleware,RoleList)
-app.post('/admin/addRoles',checkAdminAuthMiddleware,addRole)
+app.get("/admin/roles",checkAdminAuthMiddleware,allowRole('read Role'),RoleList)
+app.post('/admin/addRoles',checkAdminAuthMiddleware,allowRole('add Role'),addRole)
 app.put("/admin/updateRole/:id",checkAdminAuthMiddleware,updateRole)
-app.put("/admin/:id/role/:roleId",checkAdminAuthMiddleware,addRoleForAdmin)
+app.post("/admin/:id/role/:roleId",checkAdminAuthMiddleware,addRoleForAdmin)
+app.post("/admin/:id/roles",checkAdminAuthMiddleware,addRolesForAdmin)
 app.post("/admin/addPermissions",checkAdminAuthMiddleware,addPermission)
 app.put("/admin/permission/:id",checkAdminAuthMiddleware,updatePermission)
 app.delete("/admin/permission/:id",checkAdminAuthMiddleware,deletePermission)
