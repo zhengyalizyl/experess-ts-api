@@ -4,7 +4,8 @@ import HttpException from "../exception/HttpException";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 import { AdminJwtPayload, JwtPayload } from '../types/jwt';
-import Admin from "src/models/Admin";
+import Admin from "../models/Admin";
+import {auth} from '../config/config'
 
 
 export const checkAuthMiddleware = async (req:Request, res: Response, next: NextFunction) => {
@@ -13,7 +14,8 @@ export const checkAuthMiddleware = async (req:Request, res: Response, next: Next
         const token = authorizationHeader.split('Bearer ')[1];
         if (token) {
             try {
-                const jwtData = jwt.verify(token, process.env.JWT_SECRET_KEY!) as AdminJwtPayload
+                const jwtData = jwt.verify(token, process.env.JWT_SECRET_KEY!) as JwtPayload
+                
                 const user = await User.findById(jwtData.id);
                 if (user) {
                  //这里需要存储用户并将用户存储在req中
@@ -39,9 +41,10 @@ export const checkAdminAuthMiddleware=async(req:Request,res:Response,next:NextFu
     const authorizationHeader = req.headers["authorization"];
     if (authorizationHeader) {
         const token = authorizationHeader.split('Bearer ')[1];
+        console.log(token)
         if (token) {
             try {
-                const jwtData = jwt.verify(token, process.env.JWT_SECRET_KEY!) as JwtPayload
+                const jwtData = jwt.verify(token,auth.adminSecretKey) as AdminJwtPayload
                 const admin = await Admin.findById(jwtData.id);
                 if (admin) {
                  //这里需要存储管理员并将管理员信息存储在req中

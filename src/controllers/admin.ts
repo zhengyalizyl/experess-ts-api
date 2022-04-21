@@ -7,7 +7,7 @@ import bcryptjs from "bcryptjs";
 
 export const adminRegister = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
     try {
-      const { username, password,confirmPassword } = req.body;
+      const { username, password,confirmPassword,role } = req.body;
       const { valid, errors } = validateAdminRegisterInput({ username, password,confirmPassword});
       if (!valid) {
         throw new HttpException(
@@ -31,7 +31,8 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
       const admin: IAdminDocument = new Admin({
         username,
         password:hashPassword,
-        isAdmin:true
+        isAdmin:true,
+        role
       })
   
       
@@ -42,7 +43,6 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
       res.json({
         successfull: true,
         data: {
-          // user: newAdmin._doc,
           token
         }
       })

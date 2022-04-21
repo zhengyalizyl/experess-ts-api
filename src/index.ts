@@ -13,6 +13,8 @@ import morgan from "morgan";
 import helmet from "helmet";
 import { createComment,deleteComment } from './controllers/comments';
 import { adminRegister, postAdminLogin, adminList, addAdmin } from './controllers/admin';
+import { permit } from './middlewares/permission.middleware';
+import { addRole, addRoleForAdmin, RoleList, updateRole } from "./controllers/role";
 
 const app:Express =express();
 
@@ -42,8 +44,12 @@ app.delete("/posts/:id/comments/:commentId",checkAuthMiddleware,deleteComment)
 
 app.use('/admin/register',adminRegister)
 app.use('/admin/login',postAdminLogin)
-app.use('/admin/list',checkAdminAuthMiddleware,adminList)
-app.use('/admin/add',checkAdminAuthMiddleware,addAdmin)
+app.get('/admin/list',checkAdminAuthMiddleware,permit("admin","basic"),adminList)
+app.use('/admin/add',checkAdminAuthMiddleware,permit("coder","admin","basic"),addAdmin)
+app.get("/admin/roles",checkAdminAuthMiddleware,RoleList)
+app.post('/admin/addRoles',checkAdminAuthMiddleware,addRole)
+app.post("/admin/updateRole/:id",checkAdminAuthMiddleware,updateRole)
+app.post("/admin/:id/role/:roleId",checkAdminAuthMiddleware,addRoleForAdmin)
 
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{

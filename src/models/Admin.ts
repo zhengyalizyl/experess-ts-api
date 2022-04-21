@@ -3,11 +3,20 @@ import { Schema, model, Model, Document } from "mongoose";
 import { AdminJwtPayload } from "../types/jwt";
 import {auth} from "../config/config";
 import uniqueValidator  from 'mongoose-unique-validator';
+import { IRoleDocument } from './Role';
+
+// export enum Role{
+//   admin="admin",
+//   basic ="basic",
+//   coder="coder"
+// }
 export interface IAdminDocument extends Document {
   username: string;
   password: string;
   generateToken: () => string;
   _doc:IAdminDocument;
+  // role:Role;
+  role:IRoleDocument["_id"]
   isAdmin:boolean;
 }
 
@@ -15,7 +24,12 @@ const adminSchema: Schema = new Schema(
   {
     username: {type:String,unique:true,trim:true},
     password: String,
-    isAdmin:{type:Boolean,default:false}
+    isAdmin:{type:Boolean,default:false},
+    // role:{type:String,default:'basic'}
+    role:{
+      type:Schema.Types.ObjectId,
+      ref:"Role"
+    }
   },
   { timestamps: true }
 );
