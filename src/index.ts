@@ -13,9 +13,10 @@ import morgan from "morgan";
 import helmet from "helmet";
 import { createComment,deleteComment } from './controllers/comments';
 import { adminRegister, postAdminLogin, adminList, addAdmin } from './controllers/admin';
-import { permit } from './middlewares/permission.middleware';
-import { addRole, addRoleForAdmin, RoleList, updateRole } from "./controllers/role";
+// import { permit } from './middlewares/permission.middleware';
+import { addRole, addRoleForAdmin, addRoleForPersmission, RoleList, updateRole } from "./controllers/role";
 import { addPermission, permissionList, updatePermission, deletePermission } from './controllers/permissions';
+import { allowRole } from './middlewares/role.middlewarte';
 
 const app:Express =express();
 
@@ -45,8 +46,8 @@ app.delete("/posts/:id/comments/:commentId",checkAuthMiddleware,deleteComment)
 
 app.use('/admin/register',adminRegister)
 app.use('/admin/login',postAdminLogin)
-app.get('/admin/list',checkAdminAuthMiddleware,permit("admin","basic"),adminList)
-app.use('/admin/add',checkAdminAuthMiddleware,permit("coder","admin","basic"),addAdmin)
+app.get('/admin/list',checkAdminAuthMiddleware,allowRole('read admin'),adminList)
+app.use('/admin/add',checkAdminAuthMiddleware,allowRole('add admin'),addAdmin)
 app.get("/admin/roles",checkAdminAuthMiddleware,RoleList)
 app.post('/admin/addRoles',checkAdminAuthMiddleware,addRole)
 app.put("/admin/updateRole/:id",checkAdminAuthMiddleware,updateRole)
@@ -55,7 +56,7 @@ app.post("/admin/addPermissions",checkAdminAuthMiddleware,addPermission)
 app.put("/admin/permission/:id",checkAdminAuthMiddleware,updatePermission)
 app.delete("/admin/permission/:id",checkAdminAuthMiddleware,deletePermission)
 app.get("/admin/permissions",checkAdminAuthMiddleware,permissionList)
-
+app.post("/admin/roles/:id/permissions",checkAdminAuthMiddleware,addRoleForPersmission)
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{
     const error: HttpException=new HttpException(StatusCodes.NOT_FOUND,'Router Not found')
