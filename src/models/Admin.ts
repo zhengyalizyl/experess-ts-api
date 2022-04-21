@@ -3,6 +3,8 @@ import { Schema, model, Model, Document } from "mongoose";
 import { AdminJwtPayload } from "../types/jwt";
 import {auth} from "../config/config";
 import uniqueValidator  from 'mongoose-unique-validator';
+//@ts-ignore
+import mongooseExists from "mongoose-exists";
 import { IRoleDocument } from './Role';
 
 // export enum Role{
@@ -28,7 +30,9 @@ const adminSchema: Schema = new Schema(
     // role:{type:String,default:'basic'}
     role:{
       type:Schema.Types.ObjectId,
-      ref:"Role"
+      ref:"Role",
+      exist:true,
+      autopopulate:true//自动填充role的相关信息比如nane，nameCn到这里来
     }
   },
   { timestamps: true }
@@ -48,7 +52,11 @@ adminSchema.set("toJSON", {
   }
 });
 
+adminSchema.plugin(mongooseExists)
 adminSchema.plugin(uniqueValidator)
+adminSchema.plugin(require('mongoose-autopopulate'))
+
+
 const Admin: Model<IAdminDocument> = model<IAdminDocument>(
   "Admin",
   adminSchema
