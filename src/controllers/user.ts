@@ -16,7 +16,7 @@ import bcryptjs from "bcryptjs";
 
 const throwLoginValidateError=(errors:LoginInputError)=>{
   throw new HttpException(
-    StatusCodes.UNPROCESSABLE_ENTITY,
+    StatusCodes.UNAUTHORIZED,
     "User login input error",
     errors
   );
