@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { Schema, model, Model, Document } from "mongoose";
+import { Schema, model, Model, Document,PaginateModel } from "mongoose";
 import { AdminJwtPayload } from "../types/jwt";
 import {auth} from "../config/config";
 import uniqueValidator  from 'mongoose-unique-validator';
@@ -12,6 +12,11 @@ import { IRoleDocument } from './Role';
 //   basic ="basic",
 //   coder="coder"
 // }
+
+interface IAdminModel extends PaginateModel<IAdminDocument>{}
+
+interface IAdminModel extends Model <IAdminDocument>{
+}
 export interface IAdminDocument extends Document {
   username: string;
   password: string;
@@ -64,7 +69,7 @@ adminSchema.plugin(uniqueValidator)
 adminSchema.plugin(require('mongoose-autopopulate'))
 
 
-const Admin: Model<IAdminDocument> = model<IAdminDocument>(
+const Admin:IAdminModel = model<IAdminDocument,IAdminModel>(
   "Admin",
   adminSchema
 );

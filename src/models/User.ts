@@ -86,7 +86,7 @@ const UserSchema: Schema<IUserDocument> = new Schema({
 
 UserSchema.methods.generateToken=function ():string{
     const payload:JwtPayload={id:this.id}
-    return jwt.sign(payload,process.env.JWT_SECRET_KEY!,{expiresIn:'1h'})
+    return jwt.sign(payload,process.env.JWT_SECRET_KEY!,{expiresIn:'4h'})
 }
 
 UserSchema.static('admin',():DocumentQuery<IUserDocument|null,IUserDocument,{}>=>{

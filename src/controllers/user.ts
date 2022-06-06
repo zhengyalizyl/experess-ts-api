@@ -14,7 +14,7 @@ import bcryptjs from "bcryptjs";
 // }
 
 
-const throwLoginValidateError=(errors:LoginInputError)=>{
+const throwLoginValidateError = (errors: LoginInputError) => {
   throw new HttpException(
     StatusCodes.UNPROCESSABLE_ENTITY,
     "User login input error",
@@ -22,40 +22,40 @@ const throwLoginValidateError=(errors:LoginInputError)=>{
   );
 }
 
-export const postLogin=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
-   try {
-      const {username,password} =req.body;
-      const {errors,valid} =validateLoginInput({username,password});
+export const postLogin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { username, password } = req.body;
+    const { errors, valid } = validateLoginInput({ username, password });
 
-      if(!valid){
-        return throwLoginValidateError(errors);
-      }
-      const findUser = await User.findOne({ username });
-      if (!findUser) {
-        errors.general='User not found'
-        return throwLoginValidateError(errors);
-      };
+    if (!valid) {
+      return throwLoginValidateError(errors);
+    }
+    const findUser = await User.findOne({ username });
+    if (!findUser) {
+      errors.general = 'User not found'
+      return throwLoginValidateError(errors);
+    };
 
-      const match = await bcryptjs.compare(password, findUser.password);
+    const match = await bcryptjs.compare(password, findUser.password);
 
     if (!match) {
       errors.general = "Wrong credentials";
       return throwLoginValidateError(errors);
     }
-    const token =findUser.generateToken();
-      res.json({
-        success:true,
-        data:{
-          token
-        }
-      })
-   } catch (error) {
-     next(error)
-   }
+    const token = findUser.generateToken();
+    res.json({
+      success: true,
+      data: {
+        token
+      }
+    })
+  } catch (error) {
+    next(error)
+  }
 
 }
 
-export const postRegister = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
+export const postRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { username, password, confirmPassword, email } = req.body;
     const { valid, errors } = validateRegisterInput({ username, password, confirmPassword, email });
@@ -85,7 +85,7 @@ export const postRegister = async (req: Request, res: Response, next: NextFuncti
     console.log(User.admin())
 
     const newUser: IUserDocument = await user.save();
-    const token =newUser.generateToken();
+    const token = newUser.generateToken();
 
     res.json({
       success: true,
@@ -102,8 +102,11 @@ export const postRegister = async (req: Request, res: Response, next: NextFuncti
 }
 
 
-export const getCurrentUser=async(req:Request,res:Response):Promise<void>=>{
-  const user = req.currentUser as IUserDocument;
+export const getCurrentUser = async (req: Request, res: Response, next: Function): Promise<void> => {
+
+  try {
+    console.log(req)
+    const user = req.currentUser as IUserDocument;
     res.json({
       success: true,
       data: {
@@ -113,4 +116,8 @@ export const getCurrentUser=async(req:Request,res:Response):Promise<void>=>{
           "https://www.qiuzhi99.com/assets/logo-f46be81047e24aa656ea1048aa0c078e6168bb324c3df36506c014c1be677235.png"
       }
     });
+  } catch (error) {
+    next(error)
   }
+
+}

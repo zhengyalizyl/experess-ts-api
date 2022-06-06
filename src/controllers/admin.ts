@@ -52,7 +52,6 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
     }
   }
 
-
   const throwLoginValidateError=(errors:AdminLoginInputError)=>{
     throw new HttpException(
       StatusCodes.UNPROCESSABLE_ENTITY,
@@ -95,16 +94,25 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
  }
 
 
- export const adminList=async (_req:Request,res:Response,next:NextFunction):Promise<void>=>{
+ export const adminList=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
   try {
-    const  admins=await Admin.find();
+
+    let { pageSize:oldPageSize, current:oldCurrent } = req.query;
+     let pageSize=oldPageSize?parseInt(oldPageSize as string):10;
+    let current=oldCurrent?parseInt(oldCurrent as string):10;
+
+    [pageSize, current] = [+pageSize, +current];
+    
+    const  admins=await Admin.find()
+    .sort({ createdAt: "desc" })
+    .limit(pageSize)
+    .skip((current - 1) * pageSize);
      res.json({
        success:true,
-       data:{
-         admins
-       }
+       data:admins
      })
   } catch (error) {
+    console.dir(error)
     next(error)
   }
 
@@ -150,3 +158,26 @@ export const addAdmin=async (req:Request,res:Response,next:NextFunction):Promise
   }
 
 }
+
+
+
+export const getCurrentUser = async (req: Request, res: Response, next: Function): Promise<void> => {
+
+  try {
+    const admin = req.currentAdmin as IAdminDocument;
+    res.json({
+      success: true,
+      data: {
+        userid: admin._id,
+        name:admin.username,
+        avatar:
+          "https://www.qiuzhi99.com/assets/logo-f46be81047e24aa656ea1048aa0c078e6168bb324c3df36506c014c1be677235.png"
+      }
+    });
+  } catch (error) {
+    next(error)
+  }
+
+}
+
+

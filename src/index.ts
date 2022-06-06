@@ -2,7 +2,7 @@ import express,{Express,NextFunction,Request,Response} from "express";
 import mongoose from "mongoose";
 import  StatusCodes from "http-status-codes";
 import HttpException from "./exception/HttpException";
-import { postLogin, postRegister, getCurrentUser } from './controllers/user';
+import { postLogin, postRegister,getCurrentUser as getCurrentUserForUser } from './controllers/user';
 import bodyParser from "body-parser";
 import   cors from 'cors';
 import { errorMiddleware } from "./middlewares/error.middleware";
@@ -12,7 +12,7 @@ import { checkAdminAuthMiddleware, checkAuthMiddleware } from "./middlewares/che
 import morgan from "morgan";
 import helmet from "helmet";
 import { createComment,deleteComment } from './controllers/comments';
-import { adminRegister, postAdminLogin, adminList, addAdmin } from './controllers/admin';
+import { adminRegister, postAdminLogin, adminList, addAdmin, getCurrentUser } from './controllers/admin';
 // import { permit } from './middlewares/permission.middleware';
 import { addRole, addRoleForAdmin, addRoleForPersmission, addRolesForAdmin, RoleList, updateRole } from "./controllers/role";
 import { addPermission, permissionList, updatePermission, deletePermission } from './controllers/permissions';
@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json());
 app.use('/user/register',postRegister)
 app.use('/user/login',postLogin)
-app.get('/user/currentUser',checkAdminAuthMiddleware,getCurrentUser);
+app.get('/user/currentUser',checkAuthMiddleware,getCurrentUserForUser);
 app.get('/posts',getPosts)
 app.post('/posts',checkAuthMiddleware,createPost)
 app.get('/posts/:id',checkAuthMiddleware,getPost)
@@ -47,7 +47,8 @@ app.delete("/posts/:id/comments/:commentId",checkAuthMiddleware,deleteComment)
 
 app.use('/admin/register',adminRegister)
 app.use('/admin/login',postAdminLogin)
-app.get('/admin/list',checkAdminAuthMiddleware,allowRole('read admin'),adminList)
+app.get('/admin/user/currentUser',checkAdminAuthMiddleware,getCurrentUser);
+app.get('/admin/users',checkAdminAuthMiddleware,allowRole('read admin'),adminList)
 app.use('/admin/add',checkAdminAuthMiddleware,allowRole('add admin'),addAdmin)
 app.get("/admin/roles",checkAdminAuthMiddleware,allowRole('read Role'),RoleList)
 app.post('/admin/addRoles',checkAdminAuthMiddleware,allowRole('add Role'),addRole)
