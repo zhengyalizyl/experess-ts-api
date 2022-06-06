@@ -7,7 +7,7 @@ export const permissionList = async (_req: Request, res: Response, next: NextFun
     try {
         const permission = await Permission.find();
         res.json({
-            successfull: true,
+            success: true,
             data: {
                 permission
             }
@@ -30,7 +30,7 @@ export const addPermission = async (req: Request, res: Response, next: NextFunct
         const resPermission = await permission.save()
 
         res.json({
-            successfull: true,
+            success: true,
             data: {
                 permission: resPermission
             }
@@ -58,7 +58,7 @@ export const updatePermission = async (req: Request, res: Response, next: NextFu
                 success: true,
                 data: {
                     permission: resPermission,
-                    message: "updated successfully"
+                    message: "updated successy"
                 }
             });
         } else {
@@ -79,7 +79,7 @@ export const deletePermission = async (req: Request, res: Response, next: NextFu
             res.json({
                 success: true,
                 data: {
-                    message: "deleted successfully"
+                    message: "deleted successy"
                 }
             });
         } else {

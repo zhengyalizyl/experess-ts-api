@@ -27,7 +27,7 @@ export const getPosts = async (req: Request, res: Response, next: NextFunction):
     };
     const posts = await Post.paginate({},options);
     res.json({
-      successfull: true,
+      success: true,
       data: posts
     })
   } catch (error) {
@@ -52,7 +52,7 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
         // await post.update({body})
         const newPost = await Post.findByIdAndUpdate(id, { body }, { new: true })
         res.json({
-          successfull: true,
+          success: true,
           data: {
             message: 'update sucessfully',
             post: newPost
@@ -81,7 +81,7 @@ export const deletePost = async (req: Request, res: Response, next: NextFunction
       if (post.username === user.username) {
         await Post.findByIdAndDelete(id)
         res.json({
-          successfull: true,
+          success: true,
           data: {
             message: 'delete sucessfully',
           }
@@ -105,7 +105,7 @@ export const getPost = async (req: Request, res: Response, next: NextFunction): 
     const post = await Post.findById(id).populate('user',"-password");
     if (post) {
       res.json({
-        successfull: true,
+        success: true,
         data: { post}
       })
     } else {
@@ -137,7 +137,7 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
     const post = await newPost.save()
 
     res.json({
-      successfull: true,
+      success: true,
       data: {
         message: 'created sucessfully',
         post
@@ -169,7 +169,7 @@ export const likePost = async (req: Request, res: Response, next: NextFunction):
       await post.save()
       await user.save()
       res.json({
-        successfull: true,
+        success: true,
         data: {
           post
         }

@@ -2,7 +2,7 @@ import express,{Express,NextFunction,Request,Response} from "express";
 import mongoose from "mongoose";
 import  StatusCodes from "http-status-codes";
 import HttpException from "./exception/HttpException";
-import { postLogin, postRegister} from "./controllers/user";
+import { postLogin, postRegister, getCurrentUser } from './controllers/user';
 import bodyParser from "body-parser";
 import   cors from 'cors';
 import { errorMiddleware } from "./middlewares/error.middleware";
@@ -34,6 +34,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json());
 app.use('/user/register',postRegister)
 app.use('/user/login',postLogin)
+app.get('/user/currentUser',checkAdminAuthMiddleware,getCurrentUser);
 app.get('/posts',getPosts)
 app.post('/posts',checkAuthMiddleware,createPost)
 app.get('/posts/:id',checkAuthMiddleware,getPost)

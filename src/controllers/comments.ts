@@ -29,7 +29,7 @@ export const createComment = async (req: Request, res: Response, next: NextFunct
             })
             await post.save()
             res.json({
-                successfull: true,
+                success: true,
                 data: {
                     message: 'comment has been  created sucessfully',
                     post
@@ -63,7 +63,7 @@ export const deleteComment = async (req: Request, res: Response, next: NextFunct
                     post.comments.splice(commentIndex, 1)
                     await post.save();
                     res.json({
-                        successfull: true,
+                        success: true,
                         data: {
                             message: 'comment has been  created sucessfully',
                             post

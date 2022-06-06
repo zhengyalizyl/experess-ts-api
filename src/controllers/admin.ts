@@ -41,7 +41,7 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
       const token =newAdmin.generateToken();
   
       res.json({
-        successfull: true,
+        success: true,
         data: {
           token
         }
@@ -83,7 +83,7 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
      }
      const token =findUser.generateToken();
        res.json({
-         successfull:true,
+         success:true,
          data:{
            token
          }
@@ -99,7 +99,7 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
   try {
     const  admins=await Admin.find();
      res.json({
-       successfull:true,
+       success:true,
        data:{
          admins
        }
@@ -140,7 +140,7 @@ export const addAdmin=async (req:Request,res:Response,next:NextFunction):Promise
     const resAdmin=await admin.save()
 
      res.json({
-       successfull:true,
+       success:true,
        data:{
          admin:resAdmin
        }

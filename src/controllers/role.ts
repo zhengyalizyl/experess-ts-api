@@ -13,7 +13,7 @@ export const updateRole=async(req:Request,res:Response,next:NextFunction):Promis
          if(role){
              const newRole = await Role.findByIdAndUpdate(id,{name,nameCn},{new:true})
              res.json({
-                 successfull:true,
+                 success:true,
                  data:newRole
              })
          }else{
@@ -30,7 +30,7 @@ export const updateRole=async(req:Request,res:Response,next:NextFunction):Promis
   try {
     const  roles=await Role.find();
      res.json({
-       successfull:true,
+       success:true,
        data:{
          roles
        }
@@ -53,10 +53,10 @@ export const addRole=async (req:Request,res:Response,next:NextFunction):Promise<
     const newRole=await role.save()
 
      res.json({
-       successfull:true,
+       success:true,
        data:{
          role:newRole,
-         message:'created successfully'
+         message:'created successy'
        }
      })
   } catch (error) {
@@ -92,7 +92,7 @@ export const addRoleForAdmin=async (req:Request,res:Response,next:NextFunction):
       const resAdmin=await admin.save()
   
        res.json({
-         successfull:true,
+         success:true,
          data:{
            admin:resAdmin
          }
@@ -120,7 +120,7 @@ export const addRolesForAdmin=async (req:Request,res:Response,next:NextFunction)
      await admin.save();
      const resAdmin=await Admin.findById(id)
        res.json({
-         successfull:true,
+         success:true,
          data:{
            admin:resAdmin
          }
@@ -146,7 +146,7 @@ export const addRoleForPersmission=async (req:Request,res:Response,next:NextFunc
      const restRole=await Role.findById(id)
   
        res.json({
-         successfull:true,
+         success:true,
          data:{
            role:restRole
          }

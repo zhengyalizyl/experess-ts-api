@@ -16,7 +16,7 @@ import bcryptjs from "bcryptjs";
 
 const throwLoginValidateError=(errors:LoginInputError)=>{
   throw new HttpException(
-    StatusCodes.UNAUTHORIZED,
+    StatusCodes.UNPROCESSABLE_ENTITY,
     "User login input error",
     errors
   );
@@ -44,7 +44,7 @@ export const postLogin=async (req:Request,res:Response,next:NextFunction):Promis
     }
     const token =findUser.generateToken();
       res.json({
-        successfull:true,
+        success:true,
         data:{
           token
         }
@@ -88,7 +88,7 @@ export const postRegister = async (req: Request, res: Response, next: NextFuncti
     const token =newUser.generateToken();
 
     res.json({
-      successfull: true,
+      success: true,
       data: {
         // user: newUser._doc,
         token
@@ -100,3 +100,17 @@ export const postRegister = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 }
+
+
+export const getCurrentUser=async(req:Request,res:Response):Promise<void>=>{
+  const user = req.currentUser as IUserDocument;
+    res.json({
+      success: true,
+      data: {
+        userid: user._id,
+        name: user.username,
+        avatar:
+          "https://www.qiuzhi99.com/assets/logo-f46be81047e24aa656ea1048aa0c078e6168bb324c3df36506c014c1be677235.png"
+      }
+    });
+  }
