@@ -97,20 +97,39 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
  export const adminList=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
   try {
 
-    let { pageSize:oldPageSize, current:oldCurrent } = req.query;
+    let { pageSize:oldPageSize, current:oldCurrent,isAdmin } = req.query;
      let pageSize=oldPageSize?parseInt(oldPageSize as string):10;
     let current=oldCurrent?parseInt(oldCurrent as string):10;
 
     [pageSize, current] = [+pageSize, +current];
-    
-    const  admins=await Admin.find()
-    .sort({ createdAt: "desc" })
-    .limit(pageSize)
-    .skip((current - 1) * pageSize);
+     
+    console.log(isAdmin)
+    let admins:any=[];
+    let count=0;
+    if(isAdmin==='all'){
+    admins=await Admin.find()
+      .sort({ createdAt: "desc" })
+      .limit(pageSize)
+      .skip((current - 1) * pageSize);
+      count=await Admin.count({})
+    }else{
+      admins=await Admin.find({isAdmin})
+      .sort({ createdAt: "desc" })
+      .limit(pageSize)
+      .skip((current - 1) * pageSize);
+      count=await Admin.count({isAdmin})
+    }
+  
+   
      res.json({
        success:true,
-       data:admins
+       data:admins,
+       total:count,
+       current,
+       pageSize
      })
+
+
   } catch (error) {
     console.dir(error)
     next(error)
