@@ -187,6 +187,7 @@ export const getCurrentUser = async (req: Request, res: Response, next: Function
     res.json({
       success: true,
       data: {
+        isAdmin: admin.isAdmin,
         userid: admin._id,
         name:admin.username,
         avatar:
