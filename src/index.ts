@@ -12,7 +12,7 @@ import { checkAdminAuthMiddleware, checkAuthMiddleware } from "./middlewares/che
 import morgan from "morgan";
 import helmet from "helmet";
 import { createComment,deleteComment } from './controllers/comments';
-import { adminRegister, postAdminLogin, adminList, addAdmin, getCurrentUser } from './controllers/admin';
+import { adminRegister, postAdminLogin, adminList, addAdmin, getCurrentUser, updateAdmin } from './controllers/admin';
 // import { permit } from './middlewares/permission.middleware';
 import { addRole, addRoleForAdmin, addRoleForPersmission, addRolesForAdmin, RoleList, updateRole } from "./controllers/role";
 import { addPermission, permissionList, updatePermission, deletePermission } from './controllers/permissions';
@@ -50,6 +50,12 @@ app.use('/admin/login',postAdminLogin)
 app.get('/admin/user/currentUser',checkAdminAuthMiddleware,getCurrentUser);
 app.get('/admin/users',checkAdminAuthMiddleware,allowRole('read admin'),adminList)
 app.use('/admin/add',checkAdminAuthMiddleware,allowRole('add admin'),addAdmin)
+app.put(
+    "/admin/:id",
+    checkAdminAuthMiddleware,
+    allowRole("update admin"),
+   updateAdmin
+  );
 app.get("/admin/roles",checkAdminAuthMiddleware,allowRole('read Role'),RoleList)
 app.post('/admin/addRoles',checkAdminAuthMiddleware,allowRole('add Role'),addRole)
 app.put("/admin/updateRole/:id",checkAdminAuthMiddleware,updateRole)

@@ -199,4 +199,47 @@ export const getCurrentUser = async (req: Request, res: Response, next: Function
 
 }
 
+/*
+* Update admin
+*
+* @Method PUT
+* @URL /api/admin/:id
+*
+*/
+export const updateAdmin = async (req: Request, res: Response, next: Function): Promise<void> => {
+ 
+  try {
+    const { username, password } = req.body;
+    const {errors,valid} =validateAdminLoginInput({username,password});
+    if (!valid) {
+      return throwLoginValidateError(errors);
+    }
+ 
+    const { id } = req.params;
+    const admin = await Admin.findById(id);
+ 
+    if (admin) {
+      const hashPassword =await bcryptjs.hash(password,10);
+ 
+      const resAdmin = await Admin.findByIdAndUpdate(
+        id,
+        { username: username, password: hashPassword },
+        { new: true }
+      );
+ 
+      res.json({
+        success: true,
+        data: {
+          admin: resAdmin,
+          message: "updated successfully",
+        },
+      });
+    } else {
+      errors.general='admin User not found'
+      return throwLoginValidateError(errors);
+    }
+  } catch (error) {
+    next(error)
+  }
+ }
 
