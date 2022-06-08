@@ -1,10 +1,11 @@
 import { NextFunction,Response,Request } from "express";
 import StatusCodes from "http-status-codes";
 import HttpException from "../exception/HttpException";
+
 import Admin from "../models/Admin";
 
 export const checkAdminCookieMiddleware=async(req:Request,_res:Response,next:NextFunction)=>{
-    const userId=req.cookies['userId'];
+    const userId=req.signedCookies['userId'];
     if (userId) {
         try {
             const admin = await Admin.findById(userId);

@@ -89,7 +89,7 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
        })
 
        //采用cookie的方式
-      //  res.cookie('userId',findUser._id).json({
+      //  res.cookie('userId',findUser._id,{signed:true}).json({
       //   success:true,
       //   data:{
       //     token
