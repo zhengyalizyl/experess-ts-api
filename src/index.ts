@@ -18,6 +18,7 @@ import { addRole, addRoleForAdmin, addRoleForPersmission, addRolesForAdmin, Role
 import { addPermission, permissionList, updatePermission, deletePermission } from './controllers/permissions';
 import { allowRole } from './middlewares/role.middlewarte';
 import cookieParser from "cookie-parser"
+import { menusList, selectMenus, addMenu, updateMenu,fetch } from './controllers/menus';
 
 const app:Express =express();
 
@@ -70,6 +71,12 @@ app.put("/admin/permission/:id",checkAdminAuthMiddleware,updatePermission)
 app.delete("/admin/permission/:id",checkAdminAuthMiddleware,deletePermission)
 app.get("/admin/permissions",checkAdminAuthMiddleware,permissionList)
 app.post("/admin/roles/:id/permissions",checkAdminAuthMiddleware,addRoleForPersmission)
+app.get("/admin/menus",checkAdminAuthMiddleware,allowRole('read menu'),menusList)
+app.get('/admin/menus/selectMenus',checkAdminAuthMiddleware,selectMenus);
+app.post('/admin/menus',checkAdminAuthMiddleware,allowRole('create menu'),addMenu)
+app.put('/admin/menus/:id',checkAdminAuthMiddleware,allowRole('update menu'),updateMenu)
+app.get("/admin/fetch", checkAdminAuthMiddleware, fetch);
+
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{
     const error: HttpException=new HttpException(StatusCodes.NOT_FOUND,'Router Not found')

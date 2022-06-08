@@ -4,61 +4,84 @@ import StatusCodes from "http-status-codes";
 import Role from '../models/Role';
 import Admin from '../models/Admin';
 
-export const updateRole=async(req:Request,res:Response,next:NextFunction):Promise<void>=>{
+export const updateRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
-      try {
-          const {name,nameCn} =req.body;
-          const {id} =req.params;
-          const role=await Role.findById(id);
-         if(role){
-             const newRole = await Role.findByIdAndUpdate(id,{name,nameCn},{new:true})
-             res.json({
-                 success:true,
-                 data:newRole
-             })
-         }else{
-             next(new HttpException(StatusCodes.NOT_FOUND,"Role not found"))
-         }
-      
-      } catch (error) {
-          next(error)
-      }
-
-}
-
- export const RoleList=async (_req:Request,res:Response,next:NextFunction):Promise<void>=>{
   try {
-    const  roles=await Role.find();
-     res.json({
-       success:true,
-       data:{
-         roles
-       }
-     })
+    const { name, nameCn } = req.body;
+    const { id } = req.params;
+    const role = await Role.findById(id);
+    if (role) {
+      const newRole = await Role.findByIdAndUpdate(id, { name, nameCn }, { new: true })
+      res.json({
+        success: true,
+        data: newRole
+      })
+    } else {
+      next(new HttpException(StatusCodes.NOT_FOUND, "Role not found"))
+    }
+
   } catch (error) {
     next(error)
   }
 
 }
 
-export const addRole=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
+export const RoleList = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
   try {
-   
-    const {name,nameCn} =req.body;
- 
-    const role=new Role({
+
+    let { pageSize: oldPageSize, current: oldCurrent} = req.query;
+    let pageSize = oldPageSize ? parseInt(oldPageSize as string) : 10;
+    let current = oldCurrent ? parseInt(oldCurrent as string) : 10;
+
+    [pageSize, current] = [+pageSize, +current];
+
+    let roles: any = [];
+    let count = 0;
+      roles = await Role.find()
+        .sort({ createdAt: "desc" })
+        .limit(pageSize)
+        .skip((current - 1) * pageSize);
+      count = await Role.count({})
+  
+
+    res.json({
+      success: true,
+      data: roles,
+      total: count,
+      current,
+      pageSize
+    })
+
+
+  } catch (error) {
+    console.dir(error)
+    next(error)
+  }
+
+
+
+
+}
+
+export const addRole = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+
+    const { name, nameCn } = req.body;
+
+    const role = new Role({
       name,
       nameCn
     })
-    const newRole=await role.save()
+    const newRole = await role.save()
 
-     res.json({
-       success:true,
-       data:{
-         role:newRole,
-         message:'created successy'
-       }
-     })
+    res.json({
+      success: true,
+      data: {
+        role: newRole,
+        message: 'created successy'
+      }
+    })
   } catch (error) {
     next(error)
   }
@@ -67,95 +90,94 @@ export const addRole=async (req:Request,res:Response,next:NextFunction):Promise<
 
 
 
-export const addRoleForAdmin=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
-    try {
-      const { id,roleId } =req.params;
-  
-      const admin = await Admin.findById(id);
-     if(!admin){
-        throw new HttpException(
-            StatusCodes.UNPROCESSABLE_ENTITY,
-            "admin not found",
-          );
-     }
+export const addRoleForAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { id, roleId } = req.params;
 
-     const role=await Role.findById(roleId);
-     if(!role){
-         throw new HttpException(
-             StatusCodes.NOT_FOUND,
-             "role not found"
-         )
-     }
-     if(role&&admin){
-         admin.role=roleId
-     
-      const resAdmin=await admin.save()
-  
-       res.json({
-         success:true,
-         data:{
-           admin:resAdmin
-         }
-       })
+    const admin = await Admin.findById(id);
+    if (!admin) {
+      throw new HttpException(
+        StatusCodes.UNPROCESSABLE_ENTITY,
+        "admin not found",
+      );
     }
-    } catch (error) {
-      next(error)
-    }
-  
-  }
-export const addRolesForAdmin=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
-    try {
-      const { id } =req.params;
-      const {roleIds}=req.body;
-  
-      const admin = await Admin.findById(id);
-     if(!admin){
-        throw new HttpException(
-            StatusCodes.UNPROCESSABLE_ENTITY,
-            "admin not found",
-          );
-     }
 
-     admin.roles=roleIds;
-     await admin.save();
-     const resAdmin=await Admin.findById(id)
-       res.json({
-         success:true,
-         data:{
-           admin:resAdmin
-         }
-       })
-    } catch (error) {
-      next(error)
+    const role = await Role.findById(roleId);
+    if (!role) {
+      throw new HttpException(
+        StatusCodes.NOT_FOUND,
+        "role not found"
+      )
     }
-  
+    if (role && admin) {
+      admin.role = roleId
+
+      const resAdmin = await admin.save()
+
+      res.json({
+        success: true,
+        data: {
+          admin: resAdmin
+        }
+      })
+    }
+  } catch (error) {
+    next(error)
   }
-export const addRoleForPersmission=async (req:Request,res:Response,next:NextFunction):Promise<void>=>{
-    try {
-      const { id } =req.params;
-      const { permissionIds} =req.body
-      const role = await Role.findById(id);
-     if(!role){
-        throw new HttpException(
-            StatusCodes.UNPROCESSABLE_ENTITY,
-            "role not found",
-          );
-     }
-    role.permissions=permissionIds;
+
+}
+export const addRolesForAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { roleIds } = req.body;
+
+    const admin = await Admin.findById(id);
+    if (!admin) {
+      throw new HttpException(
+        StatusCodes.UNPROCESSABLE_ENTITY,
+        "admin not found",
+      );
+    }
+
+    admin.roles = roleIds;
+    await admin.save();
+    const resAdmin = await Admin.findById(id)
+    res.json({
+      success: true,
+      data: {
+        admin: resAdmin
+      }
+    })
+  } catch (error) {
+    next(error)
+  }
+
+}
+export const addRoleForPersmission = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { permissionIds } = req.body
+    const role = await Role.findById(id);
+    if (!role) {
+      throw new HttpException(
+        StatusCodes.UNPROCESSABLE_ENTITY,
+        "role not found",
+      );
+    }
+    role.permissions = permissionIds;
     await role.save();
-     const restRole=await Role.findById(id)
-  
-       res.json({
-         success:true,
-         data:{
-           role:restRole
-         }
-       })
-    } catch (error) {
-      next(error)
-    }
-  
+    const restRole = await Role.findById(id)
+
+    res.json({
+      success: true,
+      data: {
+        role: restRole
+      }
+    })
+  } catch (error) {
+    next(error)
   }
 
+}
 
-  
+
