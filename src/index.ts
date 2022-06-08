@@ -33,7 +33,7 @@ app.use(cors({
     origin:'*',
     credentials:true
 }))
-app.use(cookieParser())
+app.use(cookieParser(process.env.COOKIE_SECRET_KEY))
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json());
 app.use('/user/register',postRegister)
@@ -91,4 +91,8 @@ const main=async ()=>{
 
 main();
 
+
+function COOKIE_SECRET_KEY(COOKIE_SECRET_KEY: any): import("express-serve-static-core").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>> {
+    throw new Error("Function not implemented.");
+}
 
