@@ -17,9 +17,9 @@ import { adminRegister, postAdminLogin, adminList, addAdmin, getCurrentUser, upd
 import { addRole, addRoleForAdmin, addRoleForPersmission, addRolesForAdmin, RoleList, updateRole } from "./controllers/role";
 import { addPermission, permissionList, updatePermission, deletePermission } from './controllers/permissions';
 import { allowRole } from './middlewares/role.middlewarte';
+import cookieParser from "cookie-parser"
 
 const app:Express =express();
-
 
 app.get('/',(_req:Request,res:Response)=>{
     res.json({
@@ -29,7 +29,11 @@ app.get('/',(_req:Request,res:Response)=>{
 
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(cors())
+app.use(cors({
+    origin:'*',
+    credentials:true
+}))
+app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json());
 app.use('/user/register',postRegister)

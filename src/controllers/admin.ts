@@ -87,6 +87,14 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
            token
          }
        })
+
+       //采用cookie的方式
+      //  res.cookie('userId',findUser._id).json({
+      //   success:true,
+      //   data:{
+      //     token
+      //   }
+      //  })
     } catch (error) {
       next(error)
     }
