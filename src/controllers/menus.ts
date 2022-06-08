@@ -37,7 +37,7 @@ export const menusList = async (req: Request, res: Response, next: Function): Pr
     try {
         let { pageSize: oldPageSize, current: oldCurrent } = req.query;
         let pageSize = oldPageSize ? parseInt(oldPageSize as string) : 10;
-        let current = oldCurrent ? parseInt(oldCurrent as string) : 10;
+        let current = oldCurrent ? parseInt(oldCurrent as string) : 1;
 
         [pageSize, current] = [+pageSize, +current];
 

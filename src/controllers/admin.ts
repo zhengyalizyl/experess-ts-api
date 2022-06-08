@@ -107,7 +107,7 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
 
     let { pageSize:oldPageSize, current:oldCurrent,isAdmin } = req.query;
      let pageSize=oldPageSize?parseInt(oldPageSize as string):10;
-    let current=oldCurrent?parseInt(oldCurrent as string):10;
+    let current=oldCurrent?parseInt(oldCurrent as string):1;
 
     [pageSize, current] = [+pageSize, +current];
      

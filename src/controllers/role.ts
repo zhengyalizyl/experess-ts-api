@@ -32,7 +32,7 @@ export const RoleList = async (req: Request, res: Response, next: NextFunction):
 
     let { pageSize: oldPageSize, current: oldCurrent} = req.query;
     let pageSize = oldPageSize ? parseInt(oldPageSize as string) : 10;
-    let current = oldCurrent ? parseInt(oldCurrent as string) : 10;
+    let current = oldCurrent ? parseInt(oldCurrent as string) : 1;
 
     [pageSize, current] = [+pageSize, +current];
 
@@ -44,6 +44,7 @@ export const RoleList = async (req: Request, res: Response, next: NextFunction):
         .skip((current - 1) * pageSize);
       count = await Role.count({})
   
+
 
     res.json({
       success: true,
