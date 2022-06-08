@@ -30,7 +30,7 @@ app.get('/',(_req:Request,res:Response)=>{
 app.use(morgan("dev"));
 app.use(helmet());
 app.use(cors({
-    origin:'*',
+    origin:'http://localhost:8000',
     credentials:true
 }))
 app.use(cookieParser(process.env.COOKIE_SECRET_KEY))
@@ -90,9 +90,3 @@ const main=async ()=>{
 }
 
 main();
-
-
-function COOKIE_SECRET_KEY(COOKIE_SECRET_KEY: any): import("express-serve-static-core").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>> {
-    throw new Error("Function not implemented.");
-}
-
