@@ -82,7 +82,6 @@ export const postRegister = async (req: Request, res: Response, next: NextFuncti
       email
     })
 
-    console.log(User.admin())
 
     const newUser: IUserDocument = await user.save();
     const token = newUser.generateToken();

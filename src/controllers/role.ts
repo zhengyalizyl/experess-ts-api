@@ -128,6 +128,7 @@ export const addRoleForAdmin = async (req: Request, res: Response, next: NextFun
 
 }
 export const addRolesForAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  console.log(req.params)
   try {
     const { id } = req.params;
     const { roleIds } = req.body;
@@ -139,16 +140,17 @@ export const addRolesForAdmin = async (req: Request, res: Response, next: NextFu
         "admin not found",
       );
     }
-
+   if(admin){
     admin.roles = roleIds;
     await admin.save();
-    const resAdmin = await Admin.findById(id)
+    const resAdmin = await Admin.findById(id);
     res.json({
       success: true,
       data: {
-        admin: resAdmin
-      }
-    })
+        admin: resAdmin,
+      },
+    });
+   }
   } catch (error) {
     next(error)
   }

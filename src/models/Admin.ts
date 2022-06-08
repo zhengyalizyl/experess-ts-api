@@ -65,7 +65,7 @@ adminSchema.set("toJSON", {
 });
 
 adminSchema.plugin(mongooseExists)
-adminSchema.plugin(uniqueValidator)
+adminSchema.plugin(uniqueValidator,{ type: 'mongoose-unique-validator' })
 adminSchema.plugin(require('mongoose-autopopulate'))
 
 

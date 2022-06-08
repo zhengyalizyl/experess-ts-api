@@ -1,11 +1,12 @@
 import bcryptjs  from 'bcryptjs';
 // import isEmail from 'validator/lib/isEmail';
-import mongoose, { Model, Schema, Document, HookNextFunction, DocumentQuery} from "mongoose";
+import mongoose, { Model, Schema, Document, HookNextFunction} from "mongoose";
 import {v4} from 'uuid';
 import jwt from "jsonwebtoken";
 import { JwtPayload } from '../types/jwt';
 // import { IPostDocument, postSchema } from './Post';
 import { IPostDocument } from './Post';
+
 
 enum Role{
     basic='basic',
@@ -18,8 +19,10 @@ interface Adress{
 }
 
 interface IUserModel extends Model <IUserDocument>{
-    admin:()=>DocumentQuery<IUserDocument|null,IUserDocument,{}>
-    orderByUsernameDesc:DocumentQuery<IUserDocument[], IUserDocument, {}>
+    admin:(username:string)=>Promise<IUserDocument>,
+    // admin:()=>DocumentQuery<IUserDocument[], IUserDocument, {}>
+    // orderByUsernameDesc:()=>DocumentQuery<IUserDocument[], IUserDocument, {}>
+    orderByUsernameDesc:()=>Promise<IUserDocument>,
 }
 interface IUserDocument extends Document {
     username: string,
@@ -89,14 +92,21 @@ UserSchema.methods.generateToken=function ():string{
     return jwt.sign(payload,process.env.JWT_SECRET_KEY!,{expiresIn:'4h'})
 }
 
-UserSchema.static('admin',():DocumentQuery<IUserDocument|null,IUserDocument,{}>=>{
-    return User.findOne({username:'zyl'});
-})
+// UserSchema.static('admin',():DocumentQuery<(IUserDocument & { _id: any; }) | null,IUserDocument&{_id:any},{}>=>{
+//     return User.findOne({username:'zyl'});
+// })
+
+UserSchema.statics.admin = function (username: string) {
+    return this.findOne({ username });
+};
+UserSchema.statics.orderByUsernameDesc = function () {
+    return User.find({}).sort({ username: -1 });
+};
 
   
-  UserSchema.static("orderByUsernameDesc", ():DocumentQuery<IUserDocument[],IUserDocument,{}>=> {
-    return User.find({}).sort({ username: -1 });
-  });
+//   UserSchema.static("orderByUsernameDesc", ():DocumentQuery<IUserDocument[],IUserDocument,{}>=> {
+//     return User.find({}).sort({ username: -1 });
+//   });
 
 
 UserSchema.pre<IUserDocument>('save',async function save(next:HookNextFunction){
