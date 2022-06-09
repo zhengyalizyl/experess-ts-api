@@ -4,36 +4,47 @@ import StatusCodes from "http-status-codes";
 import Permission from '../models/Permission';
 
 export const permissionList = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    
+
     try {
 
         let { pageSize: oldPageSize, current: oldCurrent } = req.query;
+
+
+        if (!oldPageSize || !oldCurrent) {
+            const permission = await Permission.find()
+
+            res.json({
+                success: true,
+                data: permission,
+            })
+            return
+        }
         let pageSize = oldPageSize ? parseInt(oldPageSize as string) : 10;
         let current = oldCurrent ? parseInt(oldCurrent as string) : 1;
-    
+
         [pageSize, current] = [+pageSize, +current];
-    
+
         let permission: any = [];
         let count = 0;
         permission = await Permission.find()
             .sort({ createdAt: "desc" })
             .limit(pageSize)
             .skip((current - 1) * pageSize);
-          count = await Permission.count({})
-        
+        count = await Permission.count({})
+
         res.json({
-          success: true,
-          data: permission,
-          total: count,
-          current,
-          pageSize
+            success: true,
+            data: permission,
+            total: count,
+            current,
+            pageSize
         })
-    
-    
-      } catch (error) {
+
+
+    } catch (error) {
         console.dir(error)
         next(error)
-      }
+    }
 }
 
 export const addPermission = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

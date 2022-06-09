@@ -29,8 +29,20 @@ export const updateRole = async (req: Request, res: Response, next: NextFunction
 export const RoleList = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
   try {
-
+    
     let { pageSize: oldPageSize, current: oldCurrent } = req.query;
+
+
+    if (!oldPageSize || !oldCurrent) {
+        const role = await Role.find()
+
+        res.json({
+            success: true,
+            data: role,
+        })
+        return
+    }
+
     let pageSize = oldPageSize ? parseInt(oldPageSize as string) : 10;
     let current = oldCurrent ? parseInt(oldCurrent as string) : 1;
 
