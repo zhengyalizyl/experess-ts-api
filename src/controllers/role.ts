@@ -30,7 +30,7 @@ export const RoleList = async (req: Request, res: Response, next: NextFunction):
 
   try {
 
-    let { pageSize: oldPageSize, current: oldCurrent} = req.query;
+    let { pageSize: oldPageSize, current: oldCurrent } = req.query;
     let pageSize = oldPageSize ? parseInt(oldPageSize as string) : 10;
     let current = oldCurrent ? parseInt(oldCurrent as string) : 1;
 
@@ -38,12 +38,12 @@ export const RoleList = async (req: Request, res: Response, next: NextFunction):
 
     let roles: any = [];
     let count = 0;
-      roles = await Role.find()
-        .sort({ createdAt: "desc" })
-        .limit(pageSize)
-        .skip((current - 1) * pageSize);
-      count = await Role.count({})
-  
+    roles = await Role.find()
+      .sort({ createdAt: "desc" })
+      .limit(pageSize)
+      .skip((current - 1) * pageSize);
+    count = await Role.count({})
+
 
 
     res.json({
@@ -110,18 +110,19 @@ export const addRoleForAdmin = async (req: Request, res: Response, next: NextFun
         "role not found"
       )
     }
-    if (role && admin) {
-      admin.role = roleId
 
-      const resAdmin = await admin.save()
-
+      const resAdmin = await Admin.findByIdAndUpdate(
+        id,
+        { role: roleId},
+        { new: true }
+      );
       res.json({
         success: true,
         data: {
           admin: resAdmin
         }
       })
-    }
+  
   } catch (error) {
     next(error)
   }
@@ -140,17 +141,21 @@ export const addRolesForAdmin = async (req: Request, res: Response, next: NextFu
         "admin not found",
       );
     }
-   if(admin){
-    admin.roles = roleIds;
-    await admin.save();
-    const resAdmin = await Admin.findById(id);
+
+    const resAdmin = await Admin.findByIdAndUpdate(
+      id,
+      { roles: roleIds },
+      { new: true }
+    );
+
     res.json({
       success: true,
       data: {
-        admin: resAdmin,
+        menu: resAdmin,
+        message: "updated successfully",
       },
     });
-   }
+
   } catch (error) {
     next(error)
   }
@@ -167,9 +172,12 @@ export const addRoleForPersmission = async (req: Request, res: Response, next: N
         "role not found",
       );
     }
-    role.permissions = permissionIds;
-    await role.save();
-    const restRole = await Role.findById(id)
+    const restRole = await Role.findByIdAndUpdate(
+      id,
+      { permissions: permissionIds },
+      { new: true }
+    );
+
 
     res.json({
       success: true,

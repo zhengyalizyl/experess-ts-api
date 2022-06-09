@@ -11,7 +11,3 @@ https://plugins.mongoosejs.io/plugins/autopopulate
 
 
 The project for ant- design-pro-5-studys
-
-
-bug:https://github.com/blakehaswell/mongoose-unique-validator/issues/110
-https://github.com/blakehaswell/mongoose-unique-validator:https://github.com/blakehaswell/mongoose-unique-validator/issues/88
