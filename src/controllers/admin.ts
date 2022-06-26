@@ -110,25 +110,22 @@ export const adminRegister = async (req: Request, res: Response, next: NextFunct
     let current=oldCurrent?parseInt(oldCurrent as string):1;
 
     [pageSize, current] = [+pageSize, +current];
-     
-    console.log(isAdmin)
+  //   const = req.query.sort? {  //这里需要做正则匹配
+  //     createdAt: {
+  //         $regex: req.query.sort,
+  //         $options: 'i'
+  //     }
+  // } : {} ;
+
     let admins:any=[];
     let count=0;
-    if(isAdmin==='all'){
-    admins=await Admin.find()
-      .sort({ createdAt: "desc" })
-      .limit(pageSize)
-      .skip((current - 1) * pageSize);
-      count=await Admin.count({})
-    }else{
-      admins=await Admin.find({isAdmin})
-      .sort({ createdAt: "desc" })
-      .limit(pageSize)
-      .skip((current - 1) * pageSize);
-      count=await Admin.count({isAdmin})
-    }
+    const findAdmin=isAdmin==='all'?{}:{isAdmin};
+    admins=await Admin.find({...findAdmin})
+    .sort({ createdAt: "desc" })
+    .limit(pageSize)
+    .skip((current - 1) * pageSize);
+    count=await Admin.count({...findAdmin})
   
-   
      res.json({
        success:true,
        data:admins,

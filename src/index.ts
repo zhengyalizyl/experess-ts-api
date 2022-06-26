@@ -75,7 +75,7 @@ app.get("/admin/menus",checkAdminAuthMiddleware,allowRole('read menu'),menusList
 app.get('/admin/menus/selectMenus',checkAdminAuthMiddleware,selectMenus);
 app.post('/admin/menus',checkAdminAuthMiddleware,allowRole('create menu'),addMenu)
 app.put('/admin/menus/:id',checkAdminAuthMiddleware,allowRole('update menu'),updateMenu)
-app.get("/admin/fetch", checkAdminAuthMiddleware, fetch);
+app.get("/admin/menus/fetch", checkAdminAuthMiddleware, fetch);
 
 
 app.use((_req:Request,_res:Response,next:NextFunction)=>{
